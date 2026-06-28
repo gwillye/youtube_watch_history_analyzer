@@ -1,0 +1,32 @@
+RECLASSIFICACAO YouTube por canal (Psi) — 35457 videos unicos
+
+Outros ANTES :  24091  (67.9%)
+Outros DEPOIS:   6911  (19.5%)   [+ 8570 reclassif. como Anúncios/Sem-fonte]
+Reducao de 'Outros': 17180 videos (71.3% do balde Outros)
+
+DISTRIBUICAO DEPOIS (desc):
+  Anúncios/Sem-fonte             8570  24.2%
+  Outros                         6911  19.5%
+  Filmes/Séries/Anime            3674  10.4%
+  Meme/Humor                     3553  10.0%
+  Música                         2721  7.7%
+  SHORTS                         2242  6.3%
+  Games                          1530  4.3%
+  Educação/Doc                   1462  4.1%
+  LoL                            1378  3.9%
+  Religião/Gospel                1098  3.1%
+  Programação                     694  2.0%
+  Carreira/Negócios/Finanças      597  1.7%
+  Fitness/Academia                297  0.8%
+  Geometry Dash                   285  0.8%
+  Esportes                        222  0.6%
+  Culinária                       113  0.3%
+  Data Science/IA                 110  0.3%
+
+FONTE da classificacao:
+  canal-map        9085
+  sem-canal        8570
+  outros           6911
+  delta-keep       5850
+  heuristica       2799
+  shorts-keep      2242

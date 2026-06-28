@@ -1,0 +1,13 @@
+Total unicos: 35457
+Total canais distintos: 10649
+Total unicos em 'Outros': 24091 (67.9%)
+
+Cobertura de 'Outros' pelos TOP-N canais (ordenados por outros_unicos):
+  top   50 canais cobrem  12182 unicos-Outros (50.6% dos Outros)
+  top  100 canais cobrem  13383 unicos-Outros (55.6% dos Outros)
+  top  200 canais cobrem  14643 unicos-Outros (60.8% dos Outros)
+  top  300 canais cobrem  15415 unicos-Outros (64.0% dos Outros)
+  top  500 canais cobrem  16404 unicos-Outros (68.1% dos Outros)
+
+Canais com >=5 unicos em 'Outros' (alvos de alto valor): 441
+Canais com >=3 unicos em 'Outros': 801

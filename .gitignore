@@ -1,0 +1,15 @@
+# Raw watch history — personal (video titles) — NOT published
+youtube_historico*.csv
+youtube_historico*.tsv
+*_RECLASSIFICADO*
+canais_ranking.csv
+youtube_likes*.csv
+novos_takeout*.tsv
+Outros
+*.gz
+takeout*.zip
+
+# Python
+__pycache__/
+*.pyc
+.venv/
