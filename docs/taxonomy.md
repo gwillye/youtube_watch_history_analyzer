@@ -1,44 +1,64 @@
-# 📺 YouTube — Reclassificação do histórico por CANAL (lane A) — por ψ Psi, 2026-06-27
+# YouTube: reclassificacao do historico por canal (lane A)
 
-> **Objetivo (INBOX item A):** o histórico tinha **67,9% em "Outros"** (classificação só por regex de palavra-chave do Δ Delta). Esta passada reclassifica **por canal** (IA) + heurísticas e derruba "Outros" para **21,2%**.
+Autoria: Psi, 27/06/2026.
 
-## ✅ Resultado
-| | vídeos únicos | % |
+## O problema
+
+O historico de visualizacao tinha 67,9% dos videos caindo no balde "Outros". Isso acontecia porque a classificacao anterior (do Delta) era feita so por regex de palavra-chave, e palavra-chave sozinha nao da conta da maior parte do conteudo. A ideia desta passada (item A do INBOX) foi reclassificar por canal, com ajuda de IA e algumas heuristicas, para derrubar esse "Outros".
+
+## Resultado
+
+A tabela abaixo mostra o antes e o depois sobre os videos unicos:
+
+| | videos unicos | % |
 |---|---:|---:|
-| **"Outros" ANTES** | 24.091 | 67,9% |
-| **"Outros" DEPOIS** (cycle 2) | **6.911** | **19,5%** |
-| Reclassificados p/ **Anúncios/Sem-fonte** (eram vídeos `(sem canal)` = ads/removidos) | 8.570 | 24,2% |
-| **Redução do balde "Outros"** | **17.180** | **−71,3%** |
+| "Outros" antes | 24.091 | 67,9% |
+| "Outros" depois (cycle 2) | 6.911 | 19,5% |
+| Reclassificados para Anuncios/Sem-fonte (eram videos `(sem canal)`, ou seja ads/removidos) | 8.570 | 24,2% |
+| Reducao do balde "Outros" | 17.180 | -71,3% |
 
-> **Cycle 1** levou Outros a 21,2%; **cycle 2** (mais ~80 canais no mapa: Alok/VEVO/artistas, anime, gospel adventista, Kurzgesagt; + heurísticas `vevo`→Música, `animation vs`→Filmes) → **19,5%**. **Piso prático do método ≈ 17–19%:** o Outros residual (6.911) está espalhado em **5.577 canais (~1,2 vídeo/canal)** — cauda longa de canais avulsos. Abaixo disso exige classificação **por título** (LLM por vídeo), não por canal.
+Foram dois ciclos. O cycle 1 levou "Outros" para 21,2%. O cycle 2 adicionou mais uns 80 canais ao mapa (Alok, VEVO e outros artistas, anime, gospel adventista, Kurzgesagt) e mais duas heuristicas (`vevo` vai para Musica, `animation vs` vai para Filmes), chegando a 19,5%.
 
-Total base: **35.457 vídeos únicos** (período 2023→2026). **Após incorporar o takeout novo: 35.676** (+219 — ver abaixo).
+Na pratica, o piso do metodo fica em torno de 17 a 19%. O "Outros" que sobra (6.911 videos) esta espalhado em 5.577 canais, o que da mais ou menos 1,2 video por canal, uma cauda longa de canais avulsos. Para descer abaixo disso seria preciso classificar por titulo (um LLM olhando video a video), e nao mais por canal.
 
-## 🆕 Incorporação do histórico novo (`takeout-20260626T160749Z-3-001.zip`)
-Parseei o `histórico-de-visualização.html` do export novo (3.023 ids únicos no export). Diff contra a base: **só 219 ids eram novos — e os 219 são ANÚNCIOS** (`From Google Ads`, sem canal). Ou seja: **o histórico de vídeos reais já estava 100% coberto** pelo export anterior; o que mudou foram só impressões de anúncio recentes. Os 219 entraram como `Anúncios/Sem-fonte`. Base final no `.tsv` = **35.676**. (Parser: `incorporar_takeout.py`; lista: `novos_takeout_classificados.tsv`.)
+A base total e de 35.457 videos unicos, no periodo de 2023 a 2026. Depois de incorporar o takeout novo, sao 35.676 (mais 219, explicado logo abaixo).
 
-## 📊 Distribuição final
-Filmes/Séries/Anime 3.532 · Meme/Humor 3.476 · Música 2.534 · SHORTS 2.268 · Games 1.499 · Educação/Doc 1.427 · LoL 1.371 · Religião/Gospel 1.018 · Programação 683 · Carreira/Negócios/Finanças 596 · Fitness/Academia 288 · Geometry Dash 279 · Esportes 178 · Culinária 113 · Data Science/IA 102 · **Anúncios/Sem-fonte 8.570 · Outros 7.523**.
+## Incorporacao do historico novo
 
-## 🧠 Método (melhora o regex puro do Delta)
-1. **Mapa explícito canal→categoria** (head revisado à mão, ~250 canais = 8.369 vídeos). **Conteúdo manda sobre o nome**: ex. *"Jeje Maromba"* não é fitness, é **edits de herói** → Filmes; *"Canal do Flash"* é meme de Suits → Meme/Humor.
-2. **Mantém** as categorias não-"Outros" que o Delta já acertou por keyword (6.024 vídeos).
-3. **Heurísticas** (regex em título+canal) p/ a cauda (2.703 vídeos): `- Topic`→Música (pega os canais de artista que o regex perdia, ex. *Alok/Tame Impala*), `#leagueoflegends/cblol`→LoL, `#simpsons/recap/#dc`→Filmes, gospel/acappella/adventista→Religião, `#hollowknight/#minecraft/pokemon/btd6`→Games, `#geometrydash`→Geometry Dash, academia/maromba/whey→Fitness, futebol/ufc→Esportes, receita→Culinária, python/cs50→Programação, etc.
-4. **`(sem canal)` → "Anúncios/Sem-fonte"** (8.570): são views de anúncio (Google Ads) + vídeos removidos/privados sem canal — **não são conteúdo**, então saem legitimamente do balde "Outros". (Confirma a nota do método: ~7,3k das 45,8k views eram ads.)
+O export novo foi o arquivo `takeout-20260626T160749Z-3-001.zip`. Parseei o `historico-de-visualizacao.html` dele, que tinha 3.023 ids unicos. Fazendo o diff contra a base, so 219 ids eram novos, e todos os 219 sao anuncios (`From Google Ads`, sem canal). Ou seja, o historico de videos reais ja estava 100% coberto pelo export anterior. O que mudou foram apenas impressoes de anuncio recentes. Esses 219 entraram como `Anuncios/Sem-fonte`, e a base final no `.tsv` ficou em 35.676. (O parser e o `incorporar_takeout.py` e a lista sai em `novos_takeout_classificados.tsv`.)
 
-### 🆕 Taxonomia estendida (documentado)
-Mantive as 12 categorias do Delta e **adicionei 5** úteis ao volume real do Gabriel: **Games** (jogos ≠ LoL), **Fitness/Academia**, **Esportes**, **Culinária**, **Anúncios/Sem-fonte**.
+## Distribuicao final
 
-## 📦 Saídas (em `E:\ORGANIZACAO\_EM-ABERTO\youtube\`)
-- **`youtube_historico_unicos_RECLASSIFICADO.tsv`** — base completa, 1 linha/vídeo, colunas originais + `tipo_novo` + `fonte_classif`. **Formato TSV** (tab).
-  - ⚠️ **Por que TSV e não CSV:** o `.csv` plano é posto em **quarentena automática** (heurística de *CSV formula-injection*: muitos títulos/canais começam com `@ - =`, ex. canal `@iamomri`, IDs `--3eIRSg2RY`). O TSV não dispara isso. Há também `…RECLASSIFICADO.csv.gz` (csv comprimido, abre no Excel após descompactar).
-- **`reclass_resumo.txt`** — números antes/depois + fontes.
-- **`canais_ranking.csv`** — 10.649 canais agregados (views, únicos, quanto cada um pesa em "Outros"). Base p/ expandir o mapa.
-- **`canais_top_worksheet.txt`** — top-350 canais com amostras de título (worksheet de classificação).
-- Scripts reproduzíveis: `agg_canais.py`, `classificar_canais.py`.
+Filmes/Series/Anime 3.532, Meme/Humor 3.476, Musica 2.534, SHORTS 2.268, Games 1.499, Educacao/Doc 1.427, LoL 1.371, Religiao/Gospel 1.018, Programacao 683, Carreira/Negocios/Financas 596, Fitness/Academia 288, Geometry Dash 279, Esportes 178, Culinaria 113, Data Science/IA 102, Anuncios/Sem-fonte 8.570 e Outros 7.523.
 
-## ⚠️ Limitações / próximos passos (para o próximo ciclo)
-- **`delta-keep` herda alguns erros do Delta** (ex.: review de tênis marcado como Filmes; corte de drama de LoL como Carreira). Fix: rodar as heurísticas *também* por cima dos `delta-keep` e sobrepor os óbvios.
-- **"Outros" residual (7.523)** ainda tem itens alcançáveis que a heurística perdeu (ex.: *Boom Beach*→Games, *Teologia Ilustrada*→Religião, `Mario Kart` sem espaço). Expandir mapa (ranks 250–800; 441 canais têm ≥5 vídeos em Outros) e afinar keywords → meta < 15%.
-- ✅ **Histórico novo incorporado** (só 219 ads novos; vídeos reais já cobertos).
-- Aplicar o mesmo mapa ao log por-view (`youtube_historico_completo_2026.csv`, 45.815 linhas) se o Gabriel quiser as views (não só únicos).
+## Metodo
+
+A intencao foi melhorar o regex puro que o Delta usava. Em resumo, quatro frentes:
+
+1. Mapa explicito de canal para categoria. O topo da lista foi revisado a mao, cerca de 250 canais que somam 8.369 videos. A regra aqui e que o conteudo manda sobre o nome do canal. Por exemplo, "Jeje Maromba" nao e fitness, e edits de heroi, entao vai para Filmes. O "Canal do Flash" e meme de Suits, entao vai para Meme/Humor.
+2. Mantem as categorias que nao sao "Outros" e que o Delta ja tinha acertado por palavra-chave (6.024 videos).
+3. Heuristicas (regex aplicado em titulo mais canal) para a cauda (2.703 videos). Alguns exemplos: `- Topic` vai para Musica (pega os canais de artista que o regex perdia, como Alok e Tame Impala), `#leagueoflegends`/`cblol` vai para LoL, `#simpsons`/`recap`/`#dc` vai para Filmes, gospel/acappella/adventista vai para Religiao, `#hollowknight`/`#minecraft`/`pokemon`/`btd6` vai para Games, `#geometrydash` vai para Geometry Dash, academia/maromba/whey vai para Fitness, futebol/ufc vai para Esportes, receita vai para Culinaria, python/cs50 vai para Programacao, e por ai vai.
+4. Tudo que era `(sem canal)` vai para "Anuncios/Sem-fonte" (8.570 videos). Sao views de anuncio (Google Ads) mais videos removidos ou privados que ficaram sem canal. Como nao sao conteudo de verdade, saem do balde "Outros" com razao. Isso confirma a nota do metodo de que cerca de 7,3 mil das 45,8 mil views eram ads.
+
+### Taxonomia estendida
+
+Mantive as 12 categorias originais do Delta e adicionei 5 que fazem sentido para o volume real do Gabriel: Games (jogos que nao sao LoL), Fitness/Academia, Esportes, Culinaria e Anuncios/Sem-fonte.
+
+## Saidas
+
+Os arquivos ficam em `E:\ORGANIZACAO\_EM-ABERTO\youtube\`:
+
+- `youtube_historico_unicos_RECLASSIFICADO.tsv`: a base completa, uma linha por video, com as colunas originais mais `tipo_novo` e `fonte_classif`. O formato e TSV (separado por tab). Sobre o porque de ser TSV e nao CSV: o `.csv` plano cai em quarentena automatica por causa da heuristica de CSV formula-injection, ja que muitos titulos e canais comecam com `@`, `-` ou `=` (por exemplo o canal `@iamomri` ou ids como `--3eIRSg2RY`). O TSV nao dispara esse alarme. Existe tambem um `...RECLASSIFICADO.csv.gz` (CSV comprimido, que abre no Excel depois de descompactar).
+- `reclass_resumo.txt`: os numeros de antes e depois mais as fontes.
+- `canais_ranking.csv`: 10.649 canais agregados (views, unicos e quanto cada um pesa no "Outros"). E a base para expandir o mapa.
+- `canais_top_worksheet.txt`: os 350 canais do topo com amostras de titulo, uma worksheet de classificacao.
+- Scripts reproduziveis: `agg_canais.py` e `classificar_canais.py`.
+
+## Limitacoes e proximos passos
+
+Para o proximo ciclo:
+
+- O `delta-keep` herda alguns erros do Delta. Por exemplo, review de tenis marcado como Filmes, ou corte de drama de LoL marcado como Carreira. A correcao e rodar as heuristicas tambem por cima dos `delta-keep` e sobrepor os casos obvios.
+- O "Outros" residual (7.523) ainda tem itens alcancaveis que a heuristica deixou passar, como Boom Beach que deveria ir para Games, Teologia Ilustrada que deveria ir para Religiao, ou `Mario Kart` escrito sem espaco. Da para expandir o mapa (ranks 250 a 800, lembrando que 441 canais tem 5 ou mais videos em Outros) e afinar as keywords, com meta de ficar abaixo de 15%.
+- O historico novo ja foi incorporado (so 219 ads novos, os videos reais ja estavam cobertos).
+- Aplicar o mesmo mapa ao log por view (`youtube_historico_completo_2026.csv`, 45.815 linhas), caso o Gabriel queira as views e nao so os unicos.
